@@ -6,6 +6,9 @@
 // Database field -> Frontend field mapping
 export const dbToFrontend = {
   ID: 'id',
+  Ngay: 'date',
+  Ca: 'shift',
+  QC: 'qcName',
   Lot: 'lot',
   NguonGoc: 'origin',
   Line: 'line',
@@ -21,13 +24,16 @@ export const dbToFrontend = {
   TotalBrokenPct: 'totalBrokenPercent',
   KetLuan: 'conclusion',
   ChuThich: 'notes',
-  CreatedAt: 'date',
+  CreatedAt: 'createdAt',
   UpdatedAt: 'updatedAt',
 };
 
 // Frontend field -> Database field mapping
 export const frontendToDb = {
   id: 'ID',
+  date: 'Ngay',
+  shift: 'Ca',
+  qcName: 'QC',
   lot: 'Lot',
   origin: 'NguonGoc',
   line: 'Line',
@@ -43,7 +49,6 @@ export const frontendToDb = {
   totalBrokenPercent: 'TotalBrokenPct',
   conclusion: 'KetLuan',
   notes: 'ChuThich',
-  date: 'CreatedAt',
 };
 
 /**
@@ -58,15 +63,6 @@ export function mapDbToFrontend(dbRecord) {
     if (dbRecord.hasOwnProperty(dbField)) {
       mapped[frontendField] = dbRecord[dbField];
     }
-  }
-
-  // Extract info from ChuThich if available
-  if (dbRecord.ChuThich) {
-    const parts = dbRecord.ChuThich.split(' - ');
-    mapped.date = parts[0] || mapped.date;
-    mapped.shift = parts[1] || '';
-    mapped.qcName = parts[2] || '';
-    mapped.notes = parts[3] || '';
   }
 
   return mapped;
@@ -91,20 +87,6 @@ export function mapFrontendToDb(frontendRecord) {
         mapped[dbField] = value || null;
       }
     }
-  }
-
-  // Combine checklist info into ChuThich
-  const chuThichParts = [
-    frontendRecord.date || '',
-    frontendRecord.shift || '',
-    frontendRecord.qcName || '',
-    frontendRecord.notes || ''
-  ];
-  mapped.ChuThich = chuThichParts.filter(p => p).join(' - ');
-
-  // Add STT if id exists
-  if (frontendRecord.id) {
-    mapped.STT = frontendRecord.id;
   }
 
   return mapped;

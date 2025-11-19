@@ -11,7 +11,9 @@ export class ShellingSample {
       let query = `
         SELECT
           ID,
-          STT,
+          Ngay,
+          Ca,
+          QC,
           Lot,
           NguonGoc,
           Line,
@@ -91,7 +93,9 @@ export class ShellingSample {
     try {
       const query = `
         INSERT INTO PT_QC_ShellingSamples (
-          STT,
+          Ngay,
+          Ca,
+          QC,
           Lot,
           NguonGoc,
           Line,
@@ -107,11 +111,13 @@ export class ShellingSample {
           TotalBrokenPct,
           KetLuan,
           ChuThich
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
       const params = [
-        sampleData.STT || null,
+        sampleData.Ngay || null,
+        sampleData.Ca || null,
+        sampleData.QC || null,
         sampleData.Lot || null,
         sampleData.NguonGoc || null,
         sampleData.Line || null,
@@ -150,7 +156,9 @@ export class ShellingSample {
       const query = `
         UPDATE PT_QC_ShellingSamples
         SET
-          STT = COALESCE(?, STT),
+          Ngay = COALESCE(?, Ngay),
+          Ca = COALESCE(?, Ca),
+          QC = COALESCE(?, QC),
           Lot = COALESCE(?, Lot),
           NguonGoc = COALESCE(?, NguonGoc),
           Line = COALESCE(?, Line),
@@ -170,7 +178,9 @@ export class ShellingSample {
       `;
 
       const params = [
-        sampleData.STT,
+        sampleData.Ngay,
+        sampleData.Ca,
+        sampleData.QC,
         sampleData.Lot,
         sampleData.NguonGoc,
         sampleData.Line,

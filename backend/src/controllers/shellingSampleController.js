@@ -214,12 +214,12 @@ export const getStatistics = async (req, res) => {
 };
 
 /**
- * Get samples by batch number
+ * Get samples by batch number (Lot)
  */
 export const getSamplesByBatch = async (req, res) => {
   try {
     const { batchNo } = req.params;
-    const samples = await ShellingSample.findByBatch(batchNo);
+    const samples = await ShellingSample.findByLot(batchNo);
 
     res.json({
       success: true,

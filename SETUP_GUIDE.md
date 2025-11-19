@@ -49,12 +49,12 @@ cp .env.example .env
 
 ```env
 # Server Configuration
-PORT=5000
+PORT=3306
 NODE_ENV=development
 
 # Database Configuration - ⚠️ QUAN TRỌNG: Thay đổi thông tin này
 DB_SERVER=your-sql-server-address        # Ví dụ: localhost hoặc 192.168.1.100
-DB_PORT=1433
+DB_PORT=3306
 DB_DATABASE=your-database-name           # Tên database chứa table PT_QC_ShellingSamples
 DB_USER=your-database-username           # Username SQL Server
 DB_PASSWORD=your-database-password       # Password SQL Server
@@ -76,7 +76,7 @@ npm install
 npm run dev
 ```
 
-Backend sẽ chạy tại: `http://localhost:5000`
+Backend sẽ chạy tại: `http://localhost:3306`
 
 ### 2. Cấu hình Frontend
 
@@ -91,7 +91,7 @@ cp .env.example .env
 
 ```env
 # Backend API URL
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=http://localhost:3306/api
 ```
 
 #### c. Cài đặt dependencies và chạy frontend:
@@ -131,17 +131,17 @@ Backend cung cấp các API endpoints sau:
 
 #### 1. Lấy tất cả samples:
 ```javascript
-GET http://localhost:5000/api/shelling-samples
+GET http://localhost:3306/api/shelling-samples
 ```
 
 #### 2. Lọc theo ngày:
 ```javascript
-GET http://localhost:5000/api/shelling-samples?startDate=2025-01-01&endDate=2025-01-31
+GET http://localhost:3306/api/shelling-samples?startDate=2025-01-01&endDate=2025-01-31
 ```
 
 #### 3. Tạo sample mới:
 ```javascript
-POST http://localhost:5000/api/shelling-samples
+POST http://localhost:3306/api/shelling-samples
 Content-Type: application/json
 
 {
@@ -236,7 +236,7 @@ const newSample = await shellingSamplesAPI.create({
 
 ### 1. Kiểm tra Backend
 
-Truy cập: `http://localhost:5000/health`
+Truy cập: `http://localhost:3306/health`
 
 Kết quả mong đợi:
 ```json
@@ -249,7 +249,7 @@ Kết quả mong đợi:
 
 ### 2. Kiểm tra API
 
-Truy cập: `http://localhost:5000/api/shelling-samples`
+Truy cập: `http://localhost:3306/api/shelling-samples`
 
 Kết quả mong đợi:
 ```json
@@ -265,14 +265,14 @@ Kết quả mong đợi:
 ### Lỗi kết nối database
 - Kiểm tra thông tin `DB_SERVER`, `DB_USER`, `DB_PASSWORD` trong file `.env`
 - Đảm bảo SQL Server đang chạy và cho phép remote connections
-- Kiểm tra firewall có block port 1433 không
+- Kiểm tra firewall có block port 3306 không
 
 ### CORS Error
 - Đảm bảo `CORS_ORIGIN` trong backend `.env` khớp với URL frontend
 - Mặc định: `http://localhost:5173`
 
 ### API không hoạt động
-- Kiểm tra backend đang chạy tại port 5000
+- Kiểm tra backend đang chạy tại port 3306
 - Kiểm tra `VITE_API_URL` trong frontend `.env` đúng
 
 ## Lưu ý quan trọng

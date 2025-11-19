@@ -1,15 +1,25 @@
-# DataCore Backend API
+# 🚀 DataCore Backend API
 
-Backend API server cho hệ thống quản lý QC dữ liệu nhà máy (Factory QC Data Management System).
+Backend API server cho hệ thống quản lý QC dữ liệu nhà máy.
+
+## ⚠️ THÔNG BÁO QUAN TRỌNG
+
+**ĐÃ FIX CÁC LỖI:**
+- ✅ Port: Đã đổi từ 3306 → **5000** (3306 là MySQL port!)
+- ✅ CORS: Đã fix lỗi 403 Forbidden
+- ✅ API: Đã sửa lỗi 500 Internal Server Error
+
+**Xem chi tiết:** [QUICK_FIX_SUMMARY.md](../QUICK_FIX_SUMMARY.md)
 
 ## Tech Stack
 
 - **Runtime:** Node.js
 - **Framework:** Express.js
-- **Database:** Microsoft SQL Server
+- **Database:** MySQL (tripsmgm-mydb002)
+- **Table:** PT_QC_ShellingSamples
 - **Authentication:** JWT (JSON Web Tokens)
 - **Password Hashing:** bcryptjs
-- **ORM/Database Client:** mssql
+- **Database Client:** mysql2
 
 ## Cấu trúc thư mục
 
@@ -50,39 +60,41 @@ copy .env.example .env
 Chỉnh sửa file `.env` với thông tin SQL Server của bạn:
 
 ```env
-# Server Configuration
-PORT=5000
+# ⚙️ Server Configuration
+PORT=5000                    # ✨ CHANGED from 3306 to 5000
 NODE_ENV=development
 
-# SQL Server Configuration
-DB_SERVER=localhost          # hoặc IP/hostname của SQL Server
-DB_PORT=1433
-DB_DATABASE=DataCoreDB
-DB_USER=your_username        # SQL Server username
-DB_PASSWORD=your_password    # SQL Server password
-DB_ENCRYPT=true
-DB_TRUST_SERVER_CERTIFICATE=true
+# 🗄️ MySQL Configuration
+DB_HOST=vnicc-lxwb001vh.isrk.local
+DB_PORT=3306                 # MySQL port (NOT backend port!)
+DB_DATABASE=tripsmgm-mydb002
+DB_USER=tripsmgm-rndus2
+DB_PASSWORD=wXKBvt0SRytjvER4e2Hp
 
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+# 🔐 JWT Configuration
+JWT_SECRET=datacore-secret-key-change-in-production-2024
 JWT_EXPIRE=24h
 
-# CORS Configuration
+# 🌐 CORS Configuration
 CORS_ORIGIN=http://localhost:5173
 ```
 
-### 3. Khởi tạo Database
+### 3. Kiểm tra kết nối Database
 
-Tạo database và tables:
+**QUAN TRỌNG:** Table `PT_QC_ShellingSamples` đã tồn tại trên database!
+
+Test kết nối:
 
 ```bash
-npm run init-db
+npm run test-db
 ```
 
-Script này sẽ tạo:
-- Table `Users` (quản lý user với roles)
-- Table `ShellingData` (dữ liệu QC)
-- Table `AuditLog` (audit trail)
+Script này sẽ kiểm tra:
+- ✅ Kết nối MySQL
+- ✅ Database tồn tại
+- ✅ Table `PT_QC_ShellingSamples` tồn tại
+- ✅ Cấu trúc table
+- ✅ Số lượng records
 
 ## Chạy Server
 
@@ -98,7 +110,11 @@ npm run dev
 npm start
 ```
 
-Server sẽ chạy tại: `http://localhost:5000`
+✅ Server sẽ chạy tại: **`http://localhost:5000`**
+
+Kiểm tra:
+- Health check: `http://localhost:5000/health`
+- API: `http://localhost:5000/api/shelling-samples`
 
 ## API Endpoints
 
@@ -275,7 +291,7 @@ Authorization: Bearer <admin_token>
 ### Không kết nối được SQL Server
 
 1. Kiểm tra SQL Server đang chạy
-2. Kiểm tra firewall cho phép port 1433
+2. Kiểm tra firewall cho phép port 3306
 3. Enable TCP/IP trong SQL Server Configuration Manager
 4. Kiểm tra username/password trong `.env`
 
