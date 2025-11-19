@@ -1,10 +1,9 @@
 import Table from '@/components/common/Table'
 import { formatDate } from '@/utils/helpers'
-import { mapDbToFrontend } from '@/utils/fieldMapping'
 
 const ShellingTable = ({ data, onDelete }) => {
-  // Use fieldMapping utility to convert database format to frontend format
-  const mappedData = data.map(record => mapDbToFrontend(record));
+  // Data is already mapped in useShellingData hook, no need to map again
+  const mappedData = data;
 
   const columns = [
     { key: 'date', label: 'Ngày', render: (val) => formatDate(val) },

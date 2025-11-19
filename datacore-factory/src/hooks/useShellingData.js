@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { shellingSamplesAPI } from '@/services/api';
+import { mapDbToFrontend, mapDbArrayToFrontend } from '@/utils/fieldMapping';
 
 /**
  * Custom hook for managing shelling samples data
@@ -24,7 +25,9 @@ export const useShellingData = () => {
     try {
       const response = await shellingSamplesAPI.getAll(filters);
       if (response.success) {
-        setRecords(response.data);
+        // Map database format to frontend format
+        const mappedData = mapDbArrayToFrontend(response.data);
+        setRecords(mappedData);
       }
     } catch (err) {
       setError(err.message);
@@ -43,9 +46,11 @@ export const useShellingData = () => {
     try {
       const response = await shellingSamplesAPI.create(record);
       if (response.success) {
+        // Map database format to frontend format
+        const mappedData = mapDbToFrontend(response.data);
         // Add the new record to the local state
-        setRecords(prev => [response.data, ...prev]);
-        return response.data;
+        setRecords(prev => [mappedData, ...prev]);
+        return mappedData;
       }
     } catch (err) {
       setError(err.message);
@@ -65,13 +70,15 @@ export const useShellingData = () => {
     try {
       const response = await shellingSamplesAPI.update(id, updatedData);
       if (response.success) {
+        // Map database format to frontend format
+        const mappedData = mapDbToFrontend(response.data);
         // Update the record in local state
         setRecords(prev =>
           prev.map(record =>
-            record.SampleID === id ? response.data : record
+            record.id === id ? mappedData : record
           )
         );
-        return response.data;
+        return mappedData;
       }
     } catch (err) {
       setError(err.message);
@@ -91,8 +98,8 @@ export const useShellingData = () => {
     try {
       const response = await shellingSamplesAPI.delete(id);
       if (response.success) {
-        // Remove from local state
-        setRecords(prev => prev.filter(r => r.SampleID !== id));
+        // Remove from local state (use 'id' field from mapped data)
+        setRecords(prev => prev.filter(r => r.id !== id));
         return true;
       }
     } catch (err) {
