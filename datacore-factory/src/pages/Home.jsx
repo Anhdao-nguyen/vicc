@@ -56,9 +56,9 @@ function Home() {
   }
 
   return (
-    <div className="min-h-screen flex animate-fadeIn">
+    <div className="min-h-screen flex animate-fadeIn bg-gradient-to-br from-white via-gray-400 to-black">
       {/* Left Content Section */}
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-between px-8 py-12 bg-white relative">
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-between px-8 py-12 bg-transparent relative">
         {/* Company Logo */}
         <div className="absolute top-8 left-8">
           <img
@@ -136,7 +136,7 @@ function Home() {
       </div>
 
       {/* Right Background Image Section */}
-      <div className="hidden md:flex w-1/2 relative bg-slate-50 items-center justify-center p-8">
+      <div className="hidden md:flex w-1/2 relative bg-transparent items-center justify-center p-8">
         <div
           className="w-full h-full bg-cover bg-center bg-no-repeat rounded-3xl shadow-lg"
           style={{
