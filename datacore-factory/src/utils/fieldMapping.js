@@ -6,6 +6,9 @@
 // Database field -> Frontend field mapping
 export const dbToFrontend = {
   ID: 'id',
+  Date: 'date',
+  Shift: 'shift',
+  QCName: 'qcName',
   Lot: 'lot',
   NguonGoc: 'origin',
   Line: 'line',
@@ -21,13 +24,16 @@ export const dbToFrontend = {
   TotalBrokenPct: 'totalBrokenPercent',
   KetLuan: 'conclusion',
   ChuThich: 'notes',
-  CreatedAt: 'date',
+  CreatedAt: 'createdAt',
   UpdatedAt: 'updatedAt',
 };
 
 // Frontend field -> Database field mapping
 export const frontendToDb = {
   id: 'ID',
+  date: 'Date',
+  shift: 'Shift',
+  qcName: 'QCName',
   lot: 'Lot',
   origin: 'NguonGoc',
   line: 'Line',
@@ -43,7 +49,6 @@ export const frontendToDb = {
   totalBrokenPercent: 'TotalBrokenPct',
   conclusion: 'KetLuan',
   notes: 'ChuThich',
-  date: 'CreatedAt',
 };
 
 /**
@@ -60,14 +65,8 @@ export function mapDbToFrontend(dbRecord) {
     }
   }
 
-  // Extract info from ChuThich if available
-  if (dbRecord.ChuThich) {
-    const parts = dbRecord.ChuThich.split(' - ');
-    mapped.date = parts[0] || mapped.date;
-    mapped.shift = parts[1] || '';
-    mapped.qcName = parts[2] || '';
-    mapped.notes = parts[3] || '';
-  }
+  // Note: Date, Shift, QCName are now separate fields in database
+  // No longer need to extract from ChuThich
 
   return mapped;
 }
@@ -93,14 +92,11 @@ export function mapFrontendToDb(frontendRecord) {
     }
   }
 
-  // Combine checklist info into ChuThich
-  const chuThichParts = [
-    frontendRecord.date || '',
-    frontendRecord.shift || '',
-    frontendRecord.qcName || '',
-    frontendRecord.notes || ''
-  ];
-  mapped.ChuThich = chuThichParts.filter(p => p).join(' - ');
+  // Date, Shift, QCName are now separate fields
+  // ChuThich is just for notes
+  if (frontendRecord.notes) {
+    mapped.ChuThich = frontendRecord.notes;
+  }
 
   // Add STT if id exists
   if (frontendRecord.id) {
