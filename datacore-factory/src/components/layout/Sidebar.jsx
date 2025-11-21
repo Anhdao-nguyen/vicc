@@ -65,6 +65,18 @@ const Sidebar = () => {
                 <span className="text-sm">Dashboard</span>
               </Link>
 
+              <Link
+                to="/approvals"
+                className={`flex items-center px-4 py-3 rounded-lg transition-all ${
+                  location.pathname === '/approvals'
+                    ? 'bg-yellow-50 text-yellow-700 font-medium'
+                    : 'text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <span className="text-xl mr-3">✅</span>
+                <span className="text-sm">Duyệt thay đổi</span>
+              </Link>
+
               {/* Divider */}
               <div className="pt-4 pb-2">
                 <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4">

@@ -5,6 +5,7 @@ import Dashboard from '@pages/Dashboard'
 import Shelling from '@pages/Shelling'
 import Import from '@pages/Import'
 import Export from '@pages/Export'
+import PendingApprovals from '@pages/PendingApprovals'
 import NotFound from '@pages/NotFound'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         {/* QC Module with Layout */}
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/shelling" element={<Layout><Shelling /></Layout>} />
+        <Route path="/approvals" element={<Layout><PendingApprovals /></Layout>} />
 
         {/* Import-Export Module with Layout */}
         <Route path="/import" element={<Layout><Import /></Layout>} />
