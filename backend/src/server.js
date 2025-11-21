@@ -6,7 +6,8 @@ import { getPool, closePool } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import shellingSampleRoutes from './routes/shellingSampleRoutes.js';
-import pendingChangesRoutes from './routes/pendingChanges.js';
+// import pendingChangesRoutes from './routes/pendingChanges.js'; // With auth
+import pendingChangesRoutes from './routes/pendingChanges.test.js'; // TEST: No auth required
 
 // Load environment variables
 dotenv.config();
