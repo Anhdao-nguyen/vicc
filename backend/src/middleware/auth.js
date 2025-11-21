@@ -98,3 +98,26 @@ export async function optionalAuth(req, res, next) {
 
   next();
 }
+
+/**
+ * Development mode authentication bypass
+ * Use this in development when Users table doesn't exist
+ * Creates a mock user for testing
+ */
+export function devAuth(req, res, next) {
+  // Only allow in development mode
+  if (process.env.NODE_ENV !== 'development') {
+    return authenticate(req, res, next);
+  }
+
+  // Create a mock user for development
+  req.user = {
+    userId: 1,
+    username: 'dev_user',
+    role: 'admin',
+    fullName: 'Development User',
+    isActive: true,
+  };
+
+  next();
+}

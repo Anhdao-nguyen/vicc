@@ -6,6 +6,7 @@ import { getPool, closePool } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import shellingSampleRoutes from './routes/shellingSampleRoutes.js';
+import pendingChangesRoutes from './routes/pendingChanges.js';
 
 // Load environment variables
 dotenv.config();
@@ -16,22 +17,13 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(helmet()); // Security headers
 
-// CORS configuration - allow multiple origins in development
-const allowedOrigins = process.env.CORS_ORIGIN
+// Parse CORS_ORIGIN - support both single origin and multiple origins (comma-separated)
+const corsOrigin = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ['http://localhost:5173', 'http://localhost:5174'];
+  : 'http://localhost:5173';
 
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: corsOrigin,
   credentials: true,
 }));
 app.use(express.json());
@@ -56,6 +48,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/shelling-samples', shellingSampleRoutes);
+app.use('/api/pending-changes', pendingChangesRoutes);
 
 // 404 handler
 app.use((req, res) => {
