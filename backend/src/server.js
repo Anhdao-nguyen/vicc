@@ -6,6 +6,7 @@ import { getPool, closePool } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import shellingSampleRoutes from './routes/shellingSampleRoutes.js';
+import pendingChangesRoutes from './routes/pendingChanges.js';
 
 // Load environment variables
 dotenv.config();
@@ -41,6 +42,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/shelling-samples', shellingSampleRoutes);
+app.use('/api/pending-changes', pendingChangesRoutes);
 
 // 404 handler
 app.use((req, res) => {

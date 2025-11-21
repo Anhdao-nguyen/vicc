@@ -152,7 +152,90 @@ export const authAPI = {
   },
 };
 
+/**
+ * Pending Changes API
+ */
+export const pendingChangesAPI = {
+  /**
+   * Get all pending changes with optional filters
+   * @param {Object} filters - Query filters (status, requestedBy, changeType)
+   */
+  getAll: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, value);
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const endpoint = `/pending-changes${queryString ? `?${queryString}` : ''}`;
+
+    return apiRequest(endpoint);
+  },
+
+  /**
+   * Get a single pending change by ID
+   * @param {number} id - Change ID
+   */
+  getById: async (id) => {
+    return apiRequest(`/pending-changes/${id}`);
+  },
+
+  /**
+   * Submit a change for approval
+   * @param {Object} changeData - Change data (originalRecordId, changeType, newData)
+   */
+  create: async (changeData) => {
+    return apiRequest('/pending-changes', {
+      method: 'POST',
+      body: JSON.stringify(changeData),
+    });
+  },
+
+  /**
+   * Approve a pending change
+   * @param {number} id - Change ID
+   */
+  approve: async (id) => {
+    return apiRequest(`/pending-changes/${id}/approve`, {
+      method: 'POST',
+    });
+  },
+
+  /**
+   * Reject a pending change
+   * @param {number} id - Change ID
+   * @param {string} rejectReason - Reason for rejection
+   */
+  reject: async (id, rejectReason = '') => {
+    return apiRequest(`/pending-changes/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify({ rejectReason }),
+    });
+  },
+
+  /**
+   * Delete a pending change
+   * @param {number} id - Change ID
+   */
+  delete: async (id) => {
+    return apiRequest(`/pending-changes/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  /**
+   * Get statistics for pending changes
+   */
+  getStatistics: async () => {
+    return apiRequest('/pending-changes/statistics');
+  },
+};
+
 export default {
   shellingSamples: shellingSamplesAPI,
   auth: authAPI,
+  pendingChanges: pendingChangesAPI,
 };
