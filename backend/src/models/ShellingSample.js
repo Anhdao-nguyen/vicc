@@ -12,9 +12,9 @@ export class ShellingSample {
         SELECT
           ID,
           STT,
-          [Date],
-          [Shift],
-          QCName,
+          Ngay,
+          Ca,
+          QC,
           Lot,
           NguonGoc,
           Line,
@@ -95,9 +95,9 @@ export class ShellingSample {
       const query = `
         INSERT INTO PT_QC_ShellingSamples (
           STT,
-          [Date],
-          [Shift],
-          QCName,
+          Ngay,
+          Ca,
+          QC,
           Lot,
           NguonGoc,
           Line,
@@ -118,9 +118,9 @@ export class ShellingSample {
 
       const params = [
         sampleData.STT || null,
-        sampleData.Date || null,
-        sampleData.Shift || null,
-        sampleData.QCName || null,
+        sampleData.Ngay || null,
+        sampleData.Ca || null,
+        sampleData.QC || null,
         sampleData.Lot || null,
         sampleData.NguonGoc || null,
         sampleData.Line || null,
@@ -160,9 +160,9 @@ export class ShellingSample {
         UPDATE PT_QC_ShellingSamples
         SET
           STT = COALESCE(?, STT),
-          [Date] = COALESCE(?, [Date]),
-          [Shift] = COALESCE(?, [Shift]),
-          QCName = COALESCE(?, QCName),
+          Ngay = COALESCE(?, Ngay),
+          Ca = COALESCE(?, Ca),
+          QC = COALESCE(?, QC),
           Lot = COALESCE(?, Lot),
           NguonGoc = COALESCE(?, NguonGoc),
           Line = COALESCE(?, Line),
@@ -183,9 +183,9 @@ export class ShellingSample {
 
       const params = [
         sampleData.STT,
-        sampleData.Date,
-        sampleData.Shift,
-        sampleData.QCName,
+        sampleData.Ngay,
+        sampleData.Ca,
+        sampleData.QC,
         sampleData.Lot,
         sampleData.NguonGoc,
         sampleData.Line,

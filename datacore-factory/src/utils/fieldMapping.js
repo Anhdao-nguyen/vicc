@@ -6,9 +6,9 @@
 // Database field -> Frontend field mapping
 export const dbToFrontend = {
   ID: 'id',
-  Date: 'date',
-  Shift: 'shift',
-  QCName: 'qcName',
+  Ngay: 'date',
+  Ca: 'shift',
+  QC: 'qcName',
   Lot: 'lot',
   NguonGoc: 'origin',
   Line: 'line',
@@ -31,9 +31,9 @@ export const dbToFrontend = {
 // Frontend field -> Database field mapping
 export const frontendToDb = {
   id: 'ID',
-  date: 'Date',
-  shift: 'Shift',
-  qcName: 'QCName',
+  date: 'Ngay',
+  shift: 'Ca',
+  qcName: 'QC',
   lot: 'Lot',
   origin: 'NguonGoc',
   line: 'Line',
@@ -65,7 +65,7 @@ export function mapDbToFrontend(dbRecord) {
     }
   }
 
-  // Note: Date, Shift, QCName are now separate fields in database
+  // Note: Ngay, Ca, QC are now separate fields in database
   // No longer need to extract from ChuThich
 
   return mapped;
@@ -92,7 +92,7 @@ export function mapFrontendToDb(frontendRecord) {
     }
   }
 
-  // Date, Shift, QCName are now separate fields
+  // Ngay, Ca, QC are now separate fields
   // ChuThich is just for notes
   if (frontendRecord.notes) {
     mapped.ChuThich = frontendRecord.notes;
