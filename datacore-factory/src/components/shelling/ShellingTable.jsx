@@ -2,7 +2,7 @@ import Table from '@/components/common/Table'
 import { formatDate } from '@/utils/helpers'
 import { mapDbToFrontend } from '@/utils/fieldMapping'
 
-const ShellingTable = ({ data, onDelete }) => {
+const ShellingTable = ({ data, onEdit, onDelete }) => {
   // Use fieldMapping utility to convert database format to frontend format
   const mappedData = data.map(record => mapDbToFrontend(record));
 
@@ -29,13 +29,17 @@ const ShellingTable = ({ data, onDelete }) => {
     { key: 'notes', label: 'Chú thích' },
   ]
 
+  const handleEdit = (row) => {
+    onEdit(row)
+  }
+
   const handleDelete = (row) => {
     if (confirm(`Xác nhận xóa dữ liệu QC?`)) {
       onDelete(row.id)
     }
   }
 
-  return <Table columns={columns} data={mappedData} onDelete={handleDelete} />
+  return <Table columns={columns} data={mappedData} onEdit={handleEdit} onDelete={handleDelete} />
 }
 
 export default ShellingTable

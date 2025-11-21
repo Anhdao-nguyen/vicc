@@ -3,12 +3,13 @@ import Card from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import ShellingFormNew from '@/components/shelling/ShellingFormNew'
 import ShellingTable from '@/components/shelling/ShellingTable'
+import ShellingEditModal from '@/components/shelling/ShellingEditModal'
 import { useShellingData } from '@/hooks/useShellingData'
 import { exportToCSV } from '@/utils/helpers'
 import { mapFrontendToDb } from '@/utils/fieldMapping'
 
 const Shelling = () => {
-  const { records, addRecord, removeRecord } = useShellingData()
+  const { records, addRecord, updateRecord, removeRecord } = useShellingData()
   const [page, setPage] = useState(1)
   const [filters, setFilters] = useState({
     date: '',
@@ -19,6 +20,8 @@ const Shelling = () => {
     line: '',
     size: ''
   })
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editingRecord, setEditingRecord] = useState(null)
   const perPage = 10
 
   const handleSubmit = async (recordsArray) => {
@@ -80,6 +83,28 @@ const Shelling = () => {
       size: ''
     })
     setPage(1)
+  }
+
+  const handleEdit = (record) => {
+    setEditingRecord(record)
+    setIsEditModalOpen(true)
+  }
+
+  const handleSaveEdit = async (updatedRecord) => {
+    try {
+      // Convert frontend format to database format
+      const mappedRecord = mapFrontendToDb(updatedRecord)
+
+      // Update record in database
+      await updateRecord(updatedRecord.id, mappedRecord)
+
+      alert('✅ Cập nhật dữ liệu thành công!')
+      setIsEditModalOpen(false)
+      setEditingRecord(null)
+    } catch (error) {
+      console.error('Error updating record:', error)
+      alert('❌ Có lỗi xảy ra khi cập nhật dữ liệu!')
+    }
   }
 
   return (
@@ -164,7 +189,7 @@ const Shelling = () => {
             </div>
           </div>
 
-          <ShellingTable data={data} onDelete={removeRecord} />
+          <ShellingTable data={data} onEdit={handleEdit} onDelete={removeRecord} />
 
           {total > 1 && (
             <div className="flex justify-center mt-4 gap-2">
@@ -177,6 +202,17 @@ const Shelling = () => {
           )}
         </Card>
       </div>
+
+      {/* Edit Modal */}
+      <ShellingEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false)
+          setEditingRecord(null)
+        }}
+        record={editingRecord}
+        onSave={handleSaveEdit}
+      />
     </div>
   )
 }
