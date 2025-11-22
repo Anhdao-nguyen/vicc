@@ -1,9 +1,12 @@
 import Table from '@/components/common/Table'
 import { formatDate } from '@/utils/helpers'
 
-const ShellingTable = ({ data, onDelete }) => {
-  // Data is already mapped in useShellingData hook, no need to map again
-  const mappedData = data;
+const ShellingTable = ({ data, onEdit, onDelete }) => {
+  // Data is already mapped in useShellingData hook, so no need to map again
+  // Double mapping will cause all values to become undefined!
+
+  // Debug: Log data to console
+  console.log('ShellingTable - Data received:', data);
 
   const columns = [
     { key: 'date', label: 'Ngày', render: (val) => formatDate(val) },
@@ -28,13 +31,17 @@ const ShellingTable = ({ data, onDelete }) => {
     { key: 'notes', label: 'Chú thích' },
   ]
 
+  const handleEdit = (row) => {
+    onEdit(row)
+  }
+
   const handleDelete = (row) => {
     if (confirm(`Xác nhận xóa dữ liệu QC?`)) {
       onDelete(row.id)
     }
   }
 
-  return <Table columns={columns} data={mappedData} onDelete={handleDelete} />
+  return <Table columns={columns} data={data} onEdit={handleEdit} onDelete={handleDelete} />
 }
 
 export default ShellingTable
