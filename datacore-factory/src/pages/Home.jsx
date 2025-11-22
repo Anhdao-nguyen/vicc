@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ApproverInputModal from '../components/approvers/ApproverInputModal'
 
 function Home() {
   const navigate = useNavigate()
   const [selectedDept, setSelectedDept] = useState(null)
+  const [showApproverModal, setShowApproverModal] = useState(false)
+  const [currentDepartment, setCurrentDepartment] = useState(null)
 
   const departments = [
     {
@@ -38,14 +41,33 @@ function Home() {
 
   const handleDepartmentClick = (dept) => {
     setSelectedDept(dept.id)
+    setCurrentDepartment(dept)
+
     setTimeout(() => {
       if (dept.id === 'qc') {
-        navigate(dept.path)
+        // Show approver modal for QC department
+        setShowApproverModal(true)
       } else {
         alert(`Chức năng ${dept.name} đang được phát triển`)
         setSelectedDept(null)
+        setCurrentDepartment(null)
       }
     }, 300)
+  }
+
+  const handleApproverConfirm = (approver) => {
+    // Save approver to sessionStorage for later use
+    sessionStorage.setItem('currentApprover', JSON.stringify(approver))
+    sessionStorage.setItem('currentDepartment', currentDepartment.id)
+
+    // Navigate to department dashboard
+    navigate(currentDepartment.path)
+  }
+
+  const handleModalClose = () => {
+    setShowApproverModal(false)
+    setSelectedDept(null)
+    setCurrentDepartment(null)
   }
 
   return (
@@ -208,6 +230,14 @@ function Home() {
           animation: gradientShift 15s ease infinite;
         }
       `}</style>
+
+      {/* Approver Input Modal */}
+      <ApproverInputModal
+        isOpen={showApproverModal}
+        onClose={handleModalClose}
+        department={currentDepartment}
+        onConfirm={handleApproverConfirm}
+      />
     </div>
   )
 }

@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import shellingSampleRoutes from './routes/shellingSampleRoutes.js';
 import pendingChangesRoutes from './routes/pendingChanges.js';
+import departmentApproverRoutes from './routes/departmentApproverRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -49,6 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/shelling-samples', shellingSampleRoutes);
 app.use('/api/pending-changes', pendingChangesRoutes);
+app.use('/api/departments', departmentApproverRoutes);
 
 // 404 handler
 app.use((req, res) => {

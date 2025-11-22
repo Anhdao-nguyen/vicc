@@ -1,4 +1,4 @@
-import { getPool, closePool } from './database.js';
+import { getPool, closePool } from '../config/database.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -99,6 +99,62 @@ async function initDatabase() {
     `);
     console.log('✅ Table DC_AuditLog created/verified');
 
+    // Create PT_QC_PendingChanges table
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS PT_QC_PendingChanges (
+        ChangeID INT AUTO_INCREMENT PRIMARY KEY,
+        OriginalRecordID INT NOT NULL,
+        ChangeType VARCHAR(20) DEFAULT 'UPDATE',
+        DepartmentID VARCHAR(50),
+        AssignedApproverEmail VARCHAR(100),
+        NewData JSON,
+        RequestedBy VARCHAR(100),
+        RequestedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        ReviewedBy VARCHAR(100),
+        ReviewedAt DATETIME,
+        Status VARCHAR(20) DEFAULT 'PENDING',
+        RejectReason TEXT,
+        CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+        INDEX IDX_PendingChanges_Status (Status),
+        INDEX IDX_PendingChanges_RequestedAt (RequestedAt),
+        INDEX IDX_PendingChanges_OriginalRecordID (OriginalRecordID),
+        INDEX IDX_PendingChanges_DepartmentID (DepartmentID),
+        INDEX IDX_PendingChanges_AssignedApprover (AssignedApproverEmail),
+
+        CONSTRAINT FK_PendingChanges_OriginalRecord
+          FOREIGN KEY (OriginalRecordID) REFERENCES PT_QC_ShellingSamples(ID) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    console.log('✅ Table PT_QC_PendingChanges created/verified');
+
+    // Create PT_QC_DepartmentApprovers table
+    await pool.execute(`
+      CREATE TABLE IF NOT EXISTS PT_QC_DepartmentApprovers (
+        ApproverID INT AUTO_INCREMENT PRIMARY KEY,
+        DepartmentID VARCHAR(50) NOT NULL,
+        DepartmentName VARCHAR(100) NOT NULL,
+        ApproverEmail VARCHAR(100) NOT NULL,
+        ApproverName VARCHAR(100),
+        ApproverRole ENUM('admin', 'leader', 'manager') DEFAULT 'leader',
+        IsActive BOOLEAN DEFAULT TRUE,
+        CreatedBy INT,
+        CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UpdatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+        INDEX IDX_DeptApprovers_DepartmentID (DepartmentID),
+        INDEX IDX_DeptApprovers_Email (ApproverEmail),
+        INDEX IDX_DeptApprovers_IsActive (IsActive),
+
+        CONSTRAINT FK_DeptApprovers_CreatedBy
+          FOREIGN KEY (CreatedBy) REFERENCES DC_Users(userId) ON DELETE SET NULL,
+
+        UNIQUE KEY UK_Dept_Email (DepartmentID, ApproverEmail)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    console.log('✅ Table PT_QC_DepartmentApprovers created/verified');
+
     // Create default admin user if not exists
     const [existingAdmin] = await pool.execute(
       'SELECT userId FROM DC_Users WHERE username = ?',
@@ -124,6 +180,8 @@ async function initDatabase() {
     console.log('\n📋 Tables created:');
     console.log('  - DC_Users (with roles: admin, user, viewer)');
     console.log('  - PT_QC_ShellingSamples (for QC Shelling data)');
+    console.log('  - PT_QC_PendingChanges (for approval workflow)');
+    console.log('  - PT_QC_DepartmentApprovers (for department approvers)');
     console.log('  - DC_AuditLog (for audit trail)');
     console.log('\n📊 PT_QC_ShellingSamples columns:');
     console.log('  - Ngay, Ca, QC, Lot, NguonGoc, Line, Size');
@@ -131,6 +189,9 @@ async function initDatabase() {
     console.log('  - WholePct, BrokenBeGocPct, BeDoiVaManhPct');
     console.log('  - VetDaoPct, ShellPct, TotalBrokenPct');
     console.log('  - KetLuan, ChuThich');
+    console.log('\n🔐 Approval Workflow:');
+    console.log('  - PT_QC_PendingChanges: Stores pending approvals');
+    console.log('  - PT_QC_DepartmentApprovers: Manages approvers per department');
     console.log('\n💡 Next steps:');
     console.log('  1. Login with admin/admin123');
     console.log('  2. Start the server with: npm start');

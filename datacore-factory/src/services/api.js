@@ -234,8 +234,86 @@ export const pendingChangesAPI = {
   },
 };
 
+/**
+ * Department Approver API
+ */
+export const departmentApproverAPI = {
+  /**
+   * Get all approvers for a department
+   * @param {string} departmentId - Department ID (qc, hr, hse, maintenance)
+   * @param {boolean} activeOnly - Return only active approvers
+   */
+  getByDepartment: async (departmentId, activeOnly = true) => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('activeOnly', activeOnly);
+    const queryString = queryParams.toString();
+    const endpoint = `/departments/${departmentId}/approvers?${queryString}`;
+    return apiRequest(endpoint);
+  },
+
+  /**
+   * Get single approver by ID
+   * @param {number} approverId - Approver ID
+   */
+  getById: async (approverId) => {
+    return apiRequest(`/departments/approvers/${approverId}`);
+  },
+
+  /**
+   * Create new approver for a department
+   * @param {string} departmentId - Department ID
+   * @param {Object} approverData - Approver data (email, name, role)
+   */
+  create: async (departmentId, approverData) => {
+    return apiRequest(`/departments/${departmentId}/approvers`, {
+      method: 'POST',
+      body: JSON.stringify(approverData),
+    });
+  },
+
+  /**
+   * Update an approver
+   * @param {number} approverId - Approver ID
+   * @param {Object} updateData - Data to update
+   */
+  update: async (approverId, updateData) => {
+    return apiRequest(`/departments/approvers/${approverId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updateData),
+    });
+  },
+
+  /**
+   * Deactivate an approver (soft delete)
+   * @param {number} approverId - Approver ID
+   */
+  deactivate: async (approverId) => {
+    return apiRequest(`/departments/approvers/${approverId}/deactivate`, {
+      method: 'PATCH',
+    });
+  },
+
+  /**
+   * Delete an approver permanently
+   * @param {number} approverId - Approver ID
+   */
+  delete: async (approverId) => {
+    return apiRequest(`/departments/approvers/${approverId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  /**
+   * Get statistics for all departments
+   */
+  getStatistics: async () => {
+    return apiRequest('/departments/approvers/statistics');
+  },
+};
+
 export default {
   shellingSamples: shellingSamplesAPI,
   auth: authAPI,
   pendingChanges: pendingChangesAPI,
+  departmentApprover: departmentApproverAPI,
 };
